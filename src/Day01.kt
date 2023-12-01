@@ -49,7 +49,7 @@ fun main() {
         for (line in input) {
             val fixedInput = digitsRegex.replace(line, transform = replaceLambda)
 
-            // Fix stuff live eightree or sevenine
+            // Fix stuff like eightree or sevenine
             val fixedInput2 = digitsRegex.replace(fixedInput, transform = replaceLambda)
             val calibration = extractCalbrationValue(fixedInput2)
 

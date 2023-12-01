@@ -53,7 +53,6 @@ fun main() {
             val fixedInput2 = digitsRegex.replace(fixedInput, transform = replaceLambda)
             val calibration = extractCalbrationValue(fixedInput2)
 
-            println("${line} -> ${fixedInput2} -> ${calibration}")
             result += calibration
         }
 

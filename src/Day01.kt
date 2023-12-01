@@ -25,7 +25,6 @@ fun main() {
     fun part2(input: List<String>): Int {
         var result = 0
         val digitMap = mapOf(
-            "zero" to "0",
             "one" to "1",
             "two" to "2",
             "three" to "3",
@@ -37,12 +36,14 @@ fun main() {
             "nine" to "9"
         )
 
-        val digitsPattern = "(${digitMap.keys.joinToString(separator = "|")})"
-        val digitsRegex = Regex(digitsPattern)
+        val digitsRegex = "(${digitMap.keys.joinToString(separator = "|")})".toRegex(setOf(RegexOption.IGNORE_CASE))
 
         for (line in input) {
-            val fixedInput = digitsRegex.replace(line, transform = { digitMap[it.value] ?: "" })
+            val fixedInput = digitsRegex.replace(line, transform = {
+                digitMap[it.value] ?: ""
+            })
             val calibration = extractCalbrationValue(fixedInput)
+            println("${line} -> ${fixedInput} -> ${calibration}")
             result += calibration
         }
 

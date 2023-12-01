@@ -13,13 +13,7 @@ fun main() {
      */
 
     fun part1(input: List<String>): Int {
-        var result = 0
-        for (line in input) {
-            val calibrationValue = extractCalbrationValue(line)
-            result += calibrationValue
-        }
-
-        return result
+        return input.sumOf { extractCalbrationValue(it) }
     }
 
     /*

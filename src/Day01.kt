@@ -5,6 +5,13 @@ fun main() {
         return "${digits.first()}${digits.last()}".toInt()
     }
 
+    /*
+    --- Part One ----
+     Process input files and calculate the calibration value.
+     As an input use first and last digit in each line combined as two digit number.
+     Final result is sum of all calibration values.
+     */
+
     fun part1(input: List<String>): Int {
         var result = 0
         for (line in input) {

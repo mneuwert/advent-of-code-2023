@@ -36,14 +36,24 @@ fun main() {
             "nine" to "9"
         )
 
-        val digitsRegex = "(${digitMap.keys.joinToString(separator = "|")})".toRegex(setOf(RegexOption.IGNORE_CASE))
+        val digitsRegex = "(${digitMap.keys.joinToString(separator = "|")}|\\d)".toRegex(setOf(RegexOption.IGNORE_CASE))
+
+        val replaceLambda: ((MatchResult) -> String) = {
+            if(digitMap[it.value] != null) {
+                digitMap[it.value] + it.value.last()
+            } else {
+                it.value
+            }
+        }
 
         for (line in input) {
-            val fixedInput = digitsRegex.replace(line, transform = {
-                digitMap[it.value] ?: ""
-            })
-            val calibration = extractCalbrationValue(fixedInput)
-            println("${line} -> ${fixedInput} -> ${calibration}")
+            val fixedInput = digitsRegex.replace(line, transform = replaceLambda)
+
+            // Fix stuff live eightree or sevenine
+            val fixedInput2 = digitsRegex.replace(fixedInput, transform = replaceLambda)
+            val calibration = extractCalbrationValue(fixedInput2)
+
+            println("${line} -> ${fixedInput2} -> ${calibration}")
             result += calibration
         }
 
@@ -51,7 +61,7 @@ fun main() {
     }
 
     val input = readInput("Day01")
-    val input2 = readInput("Day01_test")
+    //val input2 = readInput("Day01_test")
     part1(input).println()
     part2(input).println()
 }

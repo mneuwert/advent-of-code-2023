@@ -11,9 +11,16 @@ data class Game(val id: Int, val sets: Set<CubeSet>) {
                 break
             }
         }
-
         return allSetsFullfill
     }
+
+    fun power(): Int {
+        val maxRed = sets.maxOf { it.red }
+        val maxGreen = sets.maxOf { it.green }
+        val maxBlue = sets.maxOf { it.blue }
+        return maxRed * maxGreen * maxBlue
+    }
+
     companion object {
         fun fromString(input: String): Game {
             val numberRegex = "\\d+".toRegex()
@@ -72,7 +79,13 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val games = mutableListOf<Game>()
+        // Parse input
+        for (line in input) {
+            games.add(Game.fromString(line))
+        }
+        val totalPower = games.sumOf { it.power() }
+        return totalPower
     }
 
     val input = readInput("Day02")

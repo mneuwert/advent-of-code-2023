@@ -21,14 +21,8 @@ fun main() {
             val numbers = numberRegex.findAll(line).map { PartNumber(it.value.toInt(), range = it.range, lineIndex = lineIndex) }.toList()
             val symbolsInLine = symbolRegex.findAll(line).map { Symbol(it.value.first(), range = it.range, lineIndex = lineIndex) }.toList()
 
-            for (number in numbers) {
-                parts.add(number)
-            }
-
-            for (symbol in symbolsInLine) {
-                symbols.add(symbol)
-            }
-
+            parts.addAll(numbers)
+            symbols.addAll(symbolsInLine)
         }
         return Pair(parts, symbols)
     }
@@ -50,6 +44,7 @@ fun main() {
             // Get adjacent chars in the same line
             val lineRange = IntRange(part.lineIndex-1, part.lineIndex+1)
             val inLineRange = IntRange(leftIndex-1, rightIndex+1)
+
             symbols.count { it.lineIndex in lineRange && it.range.first in inLineRange }.takeIf { it == 1}?.let {
                 validParts.add(part)
             }
@@ -79,7 +74,6 @@ fun main() {
     }
 
     val input = readInput("Day03")
-    val input2 = readInput("Day03")
     part1(input).println()
-    part2(input2).println()
+    part2(input).println()
 }

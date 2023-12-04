@@ -4,15 +4,7 @@ data class Card(val index: Int, val winningNumbers:Set<Int>, val actualNumbers:S
     }
 
     fun points(): Int {
-        var points = 0
-        for (i in 1..matches()) {
-            if (i == 1) {
-                points += i
-            } else {
-                points *= 2
-            }
-        }
-        return points
+        return if(matches() > 1) 1 shl (matches() - 1) else matches()
     }
 }
 fun main() {

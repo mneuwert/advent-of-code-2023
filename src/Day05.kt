@@ -1,3 +1,5 @@
+import java.lang.Long.min
+
 data class RangeMapping(val sourceRange:LongRange, val destinationRange:LongRange) {
     fun find(value: Long): Long? {
         return if (value in sourceRange) {
@@ -18,7 +20,11 @@ fun List<RangeMapping>.find(value: Long): Long? {
     return null
 }
 
-data class GardenPlan(val seeds:List<Long>, val mappings:Map<String, List<RangeMapping>>)
+data class GardenPlan(val seeds:List<Long>, val mappings:Map<String, List<RangeMapping>>) {
+    fun seedRanges(): List<LongRange> {
+        return seeds.chunked(2).map { LongRange(it[0], it[0] + it[1] - 1) }
+    }
+}
 
 fun main() {
 
@@ -66,11 +72,28 @@ fun main() {
         return locations.min()
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: List<String>): Long {
+        val plan = parse(input)
+        val locations = mutableListOf<Long>()
+        val seedRanges = plan.seedRanges()
+
+        // TODO: naive solution leeds to out of memory exception
+        seedRanges.forEach {
+            for (seed in it.first..it.last) {
+                var location: Long = seed
+                plan.mappings.forEach {
+                    it.value.find(location)?.let {
+                        location = it
+                    }
+                }
+                locations.add(location)
+            }
+        }
+
+        return locations.min()
     }
 
     val input = readInput("Day05")
-    part1(input).println()
-    //part2(input).println()
+    //part1(input).println()
+    part2(input).println()
 }

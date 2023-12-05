@@ -1,4 +1,23 @@
-data class RangeMapping(val sourceRange:LongRange, val destinationRange:LongRange)
+data class RangeMapping(val sourceRange:LongRange, val destinationRange:LongRange) {
+    fun find(value: Long): Long? {
+        return if (value in sourceRange) {
+            val index = value - sourceRange.first
+            destinationRange.first + index
+        } else {
+            null
+        }
+    }
+}
+
+fun List<RangeMapping>.find(value: Long): Long? {
+    for (range in this) {
+        range.find(value)?.let {
+            return it
+        }
+    }
+    return null
+}
+
 data class GardenPlan(val seeds:List<Long>, val mappings:Map<String, List<RangeMapping>>)
 
 fun main() {
@@ -34,7 +53,15 @@ fun main() {
         val plan = parse(input)
         val locations = mutableListOf<Long>()
 
-        // TODO:
+        for (seed in plan.seeds) {
+            var location: Long = seed
+            plan.mappings.forEach {
+                it.value.find(location)?.let {
+                    location = it
+                }
+            }
+            locations.add(location)
+        }
 
         return locations.min()
     }
@@ -43,7 +70,7 @@ fun main() {
         return input.size
     }
 
-    val input = readInput("Day05_test")
+    val input = readInput("Day05")
     part1(input).println()
-    part2(input).println()
+    //part2(input).println()
 }

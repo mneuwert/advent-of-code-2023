@@ -9,11 +9,33 @@ data class RangeMapping(val sourceRange:LongRange, val destinationRange:LongRang
             null
         }
     }
+
+    fun findRange(range: LongRange): LongRange? {
+        val start = maxOf(sourceRange.first, range.first)
+        val end = minOf(sourceRange.last, range.last)
+        if (start <= end) {
+            val destStart = find(start)
+            val destEnd = find(end)
+            if (destStart != null && destEnd != null) {
+                return LongRange(destStart, destEnd)
+            }
+        }
+        return null
+    }
 }
 
 fun List<RangeMapping>.find(value: Long): Long? {
     for (range in this) {
         range.find(value)?.let {
+            return it
+        }
+    }
+    return null
+}
+
+fun List<RangeMapping>.findRange(value: LongRange): LongRange? {
+    for (range in this) {
+        range.findRange(value)?.let {
             return it
         }
     }
@@ -74,23 +96,20 @@ fun main() {
 
     fun part2(input: List<String>): Long {
         val plan = parse(input)
-        val locations = mutableListOf<Long>()
+        val locations = mutableListOf<LongRange>()
         val seedRanges = plan.seedRanges()
 
-        // TODO: naive solution leeds to out of memory exception
         seedRanges.forEach {
-            for (seed in it.first..it.last) {
-                var location: Long = seed
-                plan.mappings.forEach {
-                    it.value.find(location)?.let {
-                        location = it
-                    }
+            var locationRange = it
+            plan.mappings.forEach {
+                it.value.findRange(locationRange)?.let {
+                    locationRange = it
                 }
-                locations.add(location)
             }
+            locations.add(locationRange)
         }
 
-        return locations.min()
+        return locations.minOf { it.first }
     }
 
     val input = readInput("Day05")

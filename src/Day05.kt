@@ -11,14 +11,20 @@ data class RangeMapping(val sourceRange:LongRange, val destinationRange:LongRang
     }
 
     fun findRange(range: LongRange): LongRange? {
-        val start = maxOf(sourceRange.first, range.first)
-        val end = minOf(sourceRange.last, range.last)
-        if (start <= end) {
-            val destStart = find(start)
-            val destEnd = find(end)
-            if (destStart != null && destEnd != null) {
-                return LongRange(destStart, destEnd)
-            }
+        if (range.first > sourceRange.last || range.last < sourceRange.first) {
+            return null
+        }
+        if (range.first >= sourceRange.first && range.last <= sourceRange.last) {
+            return LongRange(find(range.first)!!, find(range.last)!!)
+        }
+        if (range.first < sourceRange.first && range.last > sourceRange.last) {
+            return LongRange(find(sourceRange.first)!!, find(sourceRange.last)!!)
+        }
+        if (range.first < sourceRange.first) {
+            return LongRange(find(sourceRange.first)!!, find(range.last)!!)
+        }
+        if (range.last >= sourceRange.last) {
+            return LongRange(find(range.first)!!, find(sourceRange.last)!!)
         }
         return null
     }
@@ -33,13 +39,14 @@ fun List<RangeMapping>.find(value: Long): Long? {
     return null
 }
 
-fun List<RangeMapping>.findRange(value: LongRange): LongRange? {
+fun List<RangeMapping>.findRange(value: LongRange): List<LongRange> {
+    val mappedRanges = mutableListOf<LongRange>()
     for (range in this) {
         range.findRange(value)?.let {
-            return it
+            mappedRanges.add(it)
         }
     }
-    return null
+    return mappedRanges
 }
 
 data class GardenPlan(val seeds:List<Long>, val mappings:Map<String, List<RangeMapping>>) {
@@ -100,19 +107,31 @@ fun main() {
         val seedRanges = plan.seedRanges()
 
         seedRanges.forEach {
-            var locationRange = it
+            println("Seed range: $it")
+            var locationRanges = mutableListOf<LongRange>(it)
             plan.mappings.forEach {
-                it.value.findRange(locationRange)?.let {
-                    locationRange = it
+                val newRangeList = mutableListOf<LongRange>()
+                for(range in locationRanges) {
+                    val mappedRanges = it.value.findRange(range)
+                    if (!mappedRanges.isEmpty()) {
+                        println("Mapped ranges: $mappedRanges")
+                        newRangeList.addAll(mappedRanges)
+                    }
+                }
+                if (newRangeList.size > 0) {
+                    locationRanges = newRangeList
                 }
             }
-            locations.add(locationRange)
+            println("Adding location ranges: $locationRanges")
+            locations.addAll(locationRanges)
         }
+
+        println(locations)
 
         return locations.minOf { it.first }
     }
 
-    val input = readInput("Day05")
+    val input = readInput("Day05_test")
     //part1(input).println()
     part2(input).println()
 }

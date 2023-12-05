@@ -109,20 +109,18 @@ fun main() {
         seedRanges.forEach {
             println("Seed range: $it")
             var locationRanges = mutableListOf<LongRange>(it)
+
             plan.mappings.forEach {
-                val newRangeList = mutableListOf<LongRange>()
-                for(range in locationRanges) {
-                    val mappedRanges = it.value.findRange(range)
-                    if (!mappedRanges.isEmpty()) {
-                        println("Mapped ranges ${it.key}: $mappedRanges")
-                        newRangeList.addAll(mappedRanges)
+                var newRanges = mutableListOf<LongRange>()
+                locationRanges.forEach() { locationRange ->
+                    val mappedRanges = it.value.findRange(locationRange)
+                    if (mappedRanges.isNotEmpty()) {
+                        newRanges.addAll(mappedRanges)
                     }
                 }
-                if (newRangeList.size > 0) {
-                    locationRanges = newRangeList
-                }
+                locationRanges = newRanges
             }
-            println("Adding location ranges: $locationRanges")
+
             locations.addAll(locationRanges)
         }
 

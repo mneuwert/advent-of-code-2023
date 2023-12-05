@@ -114,7 +114,7 @@ fun main() {
                 for(range in locationRanges) {
                     val mappedRanges = it.value.findRange(range)
                     if (!mappedRanges.isEmpty()) {
-                        println("Mapped ranges: $mappedRanges")
+                        println("Mapped ranges ${it.key}: $mappedRanges")
                         newRangeList.addAll(mappedRanges)
                     }
                 }

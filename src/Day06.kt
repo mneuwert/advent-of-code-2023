@@ -2,7 +2,7 @@ import java.lang.Math.*
 import kotlin.system.measureTimeMillis
 
 data class Race(val time:Long, val recordDistance:Long) {
-    // TODO: this is not used in the solution, but it's a nice formula to calculate the number of ways to win
+    // TODO: this is not my solution, but it's a nice formula to calculate the number of ways to win
     // Credits: https://github.com/ephemient
     fun winCount(): Long {
         // x * (time - x) > distance
@@ -69,7 +69,7 @@ fun main() {
                 }
             }
         }
-        println("Time: $timeInMillis")
+        println("Time: $timeInMillis ms")
 
         return waysToWin
     }
@@ -92,7 +92,18 @@ fun main() {
                 }
             }
         }
-        println("Time: $timeInMillis")
+        println("Time: $timeInMillis ms")
+        return waysToWin
+    }
+
+        fun part2_3(input: List<String>): Int {
+        val race = parse2(input)
+        var waysToWin = 0
+        val timeInMillis = measureTimeMillis {
+            waysToWin = race.winCount().toInt()
+        }
+        println("Time: $timeInMillis ms")
+
         return waysToWin
     }
 
@@ -100,5 +111,5 @@ fun main() {
     part1(input).println()
     part2(input).println()
     part2_2(input).println()
-
+    part2_3(input).println()
 }

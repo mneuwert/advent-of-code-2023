@@ -105,11 +105,13 @@ fun main() {
         val plan = parse(input)
         val locations = mutableListOf<LongRange>()
         val seedRanges = plan.seedRanges()
+        println("Seed ranges: $seedRanges")
 
         seedRanges.forEach {
-            println("Seed range: $it")
-            var locationRanges = mutableListOf<LongRange>(it)
 
+            println("\n***Seed range: $it ***\n")
+
+            var locationRanges = mutableListOf<LongRange>(it)
             plan.mappings.forEach {
                 var newRanges = mutableListOf<LongRange>()
                 locationRanges.forEach() { locationRange ->
@@ -118,18 +120,19 @@ fun main() {
                         newRanges.addAll(mappedRanges)
                     }
                 }
+                println("${it.key} -> $newRanges")
                 locationRanges = newRanges
             }
 
             locations.addAll(locationRanges)
         }
 
-        println(locations)
+        println("Locations found: ${locations.count()}")
 
         return locations.minOf { it.first }
     }
 
-    val input = readInput("Day05_test")
+    val input = readInput("Day05")
     //part1(input).println()
     part2(input).println()
 }

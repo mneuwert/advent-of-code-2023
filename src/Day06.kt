@@ -96,7 +96,8 @@ fun main() {
         return waysToWin
     }
 
-        fun part2_3(input: List<String>): Int {
+    // TODO: To bad i didn't come up with this solution myself
+    fun part2_3(input: List<String>): Int {
         val race = parse2(input)
         var waysToWin = 0
         val timeInMillis = measureTimeMillis {

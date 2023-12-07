@@ -1,6 +1,6 @@
-data class Hand(val cards: List<Char>, val bid:Long, val rank: Int): Comparable<Hand> {
+data class Hand2(val cards: List<Char>, val bid:Long, val rank: Int): Comparable<Hand> {
     companion object {
-        val validCards = listOf('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+        val validCards = listOf('A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J')
         fun strength(card: Char): Int {
             return validCards.size - validCards.indexOf(card)
         }
@@ -22,19 +22,37 @@ data class Hand(val cards: List<Char>, val bid:Long, val rank: Int): Comparable<
                     var rank = 0
                     var pairs = 0
                     var triples = 0
+                    var fours = 0
+                    var fives = 0
+                    var jokers = 0
 
                     // Find groups of 5.4.3 and 2
                     cards.groupBy { it }.forEach {
                         when(it.value.size) {
-                            5 -> {
-                                rank = 7
-                            }
-                            4 -> {
-                                rank = 6
-                            }
+                            5 -> fives++
+                            4 -> fours++
                             2 -> pairs++
                             3 -> triples++
                         }
+
+                        if (it.key == 'J') {
+                            jokers = it.value.size
+                        }
+                    }
+
+                    cards.groupBy { it }.map { it.value.size + jokers }.forEach {
+                        when(it) {
+                            5 -> fives++
+                            4 -> fours++
+                            2 -> pairs++
+                            3 -> triples++
+                        }
+                    }
+
+                    if (fives > 0) {
+                        rank = 7
+                    } else if (fours > 0) {
+                        rank = 6
                     }
 
                     if (rank == 0) {
@@ -79,7 +97,7 @@ data class Hand(val cards: List<Char>, val bid:Long, val rank: Int): Comparable<
 }
 fun main() {
     val input = readInput("Day07")
-    Hand.parse(input)
+    Hand2.parse(input)
         .sorted()
         .mapIndexed { i, h -> h.bid * (i + 1) }
         .sum()

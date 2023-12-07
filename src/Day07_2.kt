@@ -1,3 +1,5 @@
+import java.lang.Math.max
+
 data class Hand2(val cards: List<Char>, val bid:Long, val rank: Int): Comparable<Hand> {
     companion object {
         val validCards = listOf('A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J')
@@ -27,21 +29,12 @@ data class Hand2(val cards: List<Char>, val bid:Long, val rank: Int): Comparable
                     var jokers = 0
 
                     // Find groups of 5.4.3 and 2
-                    cards.groupBy { it }.forEach {
-                        when(it.value.size) {
-                            5 -> fives++
-                            4 -> fours++
-                            2 -> pairs++
-                            3 -> triples++
-                        }
+                    var cardsMap = cards.groupBy { it }.toMutableMap()
+                    jokers = cardsMap['J']?.size ?: 0
+                    cardsMap.remove('J')
 
-                        if (it.key == 'J') {
-                            jokers = it.value.size
-                        }
-                    }
-
-                    cards.groupBy { it }.map { it.value.size + jokers }.forEach {
-                        when(it) {
+                    cardsMap.forEach {
+                        when( max(it.value.size, it.value.size + jokers) ) {
                             5 -> fives++
                             4 -> fours++
                             2 -> pairs++
@@ -95,10 +88,11 @@ data class Hand2(val cards: List<Char>, val bid:Long, val rank: Int): Comparable
         return 0
     }
 }
+
 fun main() {
     val input = readInput("Day07")
-    Hand2.parse(input)
-        .sorted()
+    val hands = Hand2.parse(input).sorted()
+    hands
         .mapIndexed { i, h -> h.bid * (i + 1) }
         .sum()
         .println()
